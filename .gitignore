@@ -1,0 +1,27 @@
+# Angular
+front-customer-admin/node_modules
+front-customer-admin/.vscode/*
+front-customer-admin/.angular/cache
+
+# Spring Boot
+backend-admin/target/
+backend-admin/.apt_generated
+backend-admin/.factorypath
+backend-admin/.springBeans
+backend-admin/.sts4-cache
+backend-admin/.mvn/wrapper/maven-wrapper.jar
+backend-admin/!**/src/main/**/target/
+backend-admin/!**/src/test/**/target/
+backend-admin/.idea
+backend-admin/*.iws
+backend-admin/*.iml
+backend-admin/*.ipr
+backend-admin/nbproject/private/
+backend-admin/nbbuild/
+backend-admin/dist/
+backend-admin/nbdist/
+backend-admin/.nb-gradle/
+backend-admin/build/
+backend-admin/!**/src/main/**/build/
+backend-admin/!**/src/test/**/build/
+backend-admin/.vscode/

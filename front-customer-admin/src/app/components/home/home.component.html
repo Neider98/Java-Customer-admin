@@ -1,0 +1,28 @@
+
+<mat-drawer-container class="container-content">
+    <mat-drawer mode="side" opened class="sidebar-container">
+        <app-sidebar-customer></app-sidebar-customer>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="container-fluid">
+            <div class="button-container">
+              <button mat-stroked-button class="btn-actions" (click)="openDialog()">+ New</button>
+              <button mat-stroked-button color="primary" (click)="exportCsv()">Export</button>
+            </div>
+            <div class="search-container">
+                    <input matInput placeholder="Enter Shared Key" [(ngModel)]="searchTerm">
+                    <button mat-stroked-button color="primary" class="search" (click)="searchSharedKey()">Search</button>
+                    <button mat-stroked-button color="primary" class="advanced-search" (click)="advancedSearch()">Advanced Search</button>
+            </div>
+            @if (advancedForm) {
+                <div class="form-advanced-search">
+                    <app-form-customer (closeForm)="closeSearch($event)"></app-form-customer>
+                </div>
+            }
+            <div class="table-container">
+                <app-table-customer [customers]="filteredCustomers" (customer)="editCustomer($event)"></app-table-customer>
+            </div>
+        </div>
+          
+    </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,6 @@
+mat-dialog-content {
+    background-color: #b6dae8!important;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+}

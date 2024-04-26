@@ -1,0 +1,15 @@
+table {
+    border: 1px solid #555;
+  }
+  th, td {
+    border: 1px solid #555;
+    text-align: center;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+
+  .btn-edit {
+    background: transparent;
+    border: 0px;
+  }

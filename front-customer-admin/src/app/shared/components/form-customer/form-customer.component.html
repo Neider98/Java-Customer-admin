@@ -1,0 +1,58 @@
+<div class="form-container">
+  <h2 class="tittle">Create New Client</h2>
+  <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+    <div class="input"> 
+      <label>Name</label>
+      <mat-form-field appearance="fill">
+        <input matInput formControlName="businessId" class="inputForm">
+        <mat-error *ngIf="checkoutForm.get('businessId')?.hasError('required')">Business ID is required</mat-error>
+      </mat-form-field> 
+    </div>
+    <div class="input"> 
+      <label>Phone</label>
+      <mat-form-field appearance="fill">
+        <input type="tel" matInput formControlName="phone" class="inputForm">
+        <mat-error *ngIf="checkoutForm.get('phone')?.hasError('required')">Phone is required</mat-error>
+      </mat-form-field>
+    </div>
+  
+    <div class="input"> 
+      <label>E-mail</label>
+      <mat-form-field>
+        <input matInput formControlName="email" placeholder="Email">
+        <mat-error *ngIf="checkoutForm.get('email')?.hasError('required')">Email is required</mat-error>
+        <mat-error *ngIf="checkoutForm.get('email')?.hasError('email')">Invalid email format</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="input">
+      <label>Start Date</label>
+      <mat-form-field appearance="fill">
+        @if (customerData.id > 0) {
+          <input class="input-date" matInput [matDatepicker]="picker1" (dateChange)="onStartDateChange($event)" formControlName="startDate">
+        } @else {
+          <input class="input-date" matInput [matDatepicker]="picker1" (dateChange)="onStartDateChange($event)">
+        }
+        <mat-error *ngIf="checkoutForm.get('startDate')?.hasError('starDate')">Invalid start date</mat-error>
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+    </div>
+  
+    <div class="input"> 
+      <label>End Date</label>
+      <mat-form-field appearance="fill">
+        @if (customerData.id > 0) {
+          <input class="input-date" matInput [matDatepicker]="picker2" (dateChange)="onEndDateChange($event)" formControlName="">
+        } @else {
+          <input class="input-date" matInput [matDatepicker]="picker2" (dateChange)="onEndDateChange($event)">
+        }
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="btn-group">
+      <button type="submit" class="btn-submit" mat-raised-button color="primary">Ok</button>
+    </div>
+  </form>
+</div>

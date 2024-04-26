@@ -1,0 +1,25 @@
+.icon-person {
+    font-size: 55px;
+    width: 50px;
+    height: 45px;
+    position: relative;
+    top: 10px;
+    right: 55px;
+    color: #2094cf;
+}
+
+nav {
+    width: 65%;
+    margin: 100px 55px 0px 55px;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+span.tittle {
+    position: relative;
+    right: 50px;
+    font-size: 25px;
+    color: #2094cf;
+}

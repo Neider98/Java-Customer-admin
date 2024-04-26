@@ -1,0 +1,63 @@
+
+
+h2.tittle {
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+
+label {
+    margin-left: 7%;
+    width: 15%;
+    display: inline-block;
+}
+
+mat-form-field > .inputForm{
+    position: relative;
+    left: 30px;
+}
+
+mat-form-field {
+    width: 300px!important;
+    position: relative;
+    left: 70px;
+}
+
+mat-datepicker-toggle {
+    position: relative;
+    right: 250px;
+}
+
+mat-dialog-actions {
+    width: 87%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: -40px;
+    margin-bottom: 5px;
+}
+button {
+    width: 20%;
+}
+
+mat-form-field > input {
+    position: relative;
+    left: 30px;
+}
+
+.input-date {
+    position: relative;
+    left: 50px;
+}
+
+.btn-submit {
+    width: 100px;
+}
+
+.btn-group {
+    display: flex;
+    width: 90%;
+    flex-direction: row;
+    justify-content: flex-end;
+
+}
