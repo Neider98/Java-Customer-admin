@@ -2,7 +2,6 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CustomerService } from './customer.service';
 import { Customer } from '../models/customer';
-import { Response } from '../models/response';
 
 describe('CustomerService', () => {
   let service: CustomerService;
@@ -13,111 +12,130 @@ describe('CustomerService', () => {
       imports: [HttpClientTestingModule],
       providers: [CustomerService]
     });
+
     service = TestBed.inject(CustomerService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    httpMock.verify(); // Verificar que no haya solicitudes pendientes.
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get a customer by id', () => {
-    const customerId = 1;
-    const mockCustomer: Customer = {
-      id: 1,
-      sharedKey: 'sharedKey1',
-      businessId: 'businessId1',
-      email: 'john@example.com',
-      phone: '123456789',
-      startDate: new Date(),
-      endDate: new Date()
-    };
-
-    service.getCustomerById(customerId).subscribe((customer: Customer | undefined) => {
-      expect(customer).toEqual(mockCustomer);
-    });
-
-    const request = httpMock.expectOne(`http://localhost:8080/api/v1/customers/${customerId}`);
-    expect(request.request.method).toBe('GET');
-    request.flush(mockCustomer);
-  });
-
-  it('should get all customers', () => {
-    const mockCustomers: Customer[] = [
-      {
+  describe('getCustomerById', () => {
+    it('should retrieve a customer by ID', () => {
+      const dummyCustomer: Customer = {
         id: 1,
         sharedKey: 'sharedKey1',
         businessId: 'businessId1',
-        email: 'john@example.com',
-        phone: '123456789',
+        email: 'email1@example.com',
+        phone: 'phone1',
         startDate: new Date(),
-        endDate: new Date()
-      },
-      {
-        id: 2,
-        sharedKey: 'sharedKey2',
-        businessId: 'businessId2',
-        email: 'jane@example.com',
-        phone: '987654321',
-        startDate: new Date(),
-        endDate: new Date()
-      }
-    ];
-    const mockResponse: Response = { status: 'success', message: mockCustomers, code: 200, date: new Date() };
+        endDate: new Date(),
+        dateAdded: new Date()
+      };
 
-    service.getCustomers().subscribe((customers: Customer[]) => {
-      expect(customers).toEqual(mockCustomers);
+      service.getCustomerById(1).subscribe(customer => {
+        expect(customer).toEqual(dummyCustomer);
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/customers/1');
+      expect(req.request.method).toBe('GET');
+      req.flush({ status: 'success', message: [dummyCustomer], code: 200, date: new Date() });
     });
 
-    const request = httpMock.expectOne('http://localhost:8080/api/v1/customers/');
-    expect(request.request.method).toBe('GET');
-    request.flush(mockResponse);
+    it('should handle error when retrieving a customer by ID', () => {
+      service.getCustomerById(1).subscribe(customer => {
+        expect(customer).toBeUndefined();
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/customers/1');
+      expect(req.request.method).toBe('GET');
+      req.error(new ErrorEvent('Error fetching customer'));
+    });
   });
 
-  it('should save a customer', () => {
-    const mockCustomer: Customer = {
-      id: 1,
-      sharedKey: 'sharedKey1',
-      businessId: 'businessId1',
-      email: 'john@example.com',
-      phone: '123456789',
-      startDate: new Date(),
-      endDate: new Date()
-    };
+  describe('getCustomers', () => {
+    it('should retrieve customers', () => {
+      const dummyCustomers: Customer[] = [
+        {
+          id: 1,
+          sharedKey: 'sharedKey1',
+          businessId: 'businessId1',
+          email: 'email1@example.com',
+          phone: 'phone1',
+          startDate: new Date(),
+          endDate: new Date(),
+          dateAdded: new Date()
+        },
+        {
+          id: 2,
+          sharedKey: 'sharedKey2',
+          businessId: 'businessId2',
+          email: 'email2@example.com',
+          phone: 'phone2',
+          startDate: new Date(),
+          endDate: new Date(),
+          dateAdded: new Date()
+        }
+      ];
 
-    service.saveCustomer(mockCustomer);
+      service.getCustomers().subscribe(customers => {
+        expect(customers).toEqual(dummyCustomers);
+      });
 
-    // No hay mucho que probar aquí, ya que la función simplemente imprime en la consola.
-    // Podrías considerar el espionaje sobre `console.log` para asegurarte de que se llame correctamente.
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/customers/');
+      expect(req.request.method).toBe('GET');
+      req.flush({ status: 'success', message: dummyCustomers, code: 200, date: new Date() });
+    });
   });
 
-  it('should edit a customer', () => {
-    const mockCustomer: Customer = {
-      id: 1,
-      sharedKey: 'sharedKey1',
-      businessId: 'businessId1',
-      email: 'john@example.com',
-      phone: '123456789',
-      startDate: new Date(),
-      endDate: new Date()
-    };
+  describe('saveCustomer', () => {
+    it('should save a customer', () => {
+      const newCustomer: Customer = {
+        id: 0,
+        sharedKey: 'newSharedKey',
+        businessId: 'newBusinessId',
+        email: 'newEmail@example.com',
+        phone: 'newPhone',
+        startDate: new Date(),
+        endDate: new Date(),
+        dateAdded: new Date()
+      };
 
-    service.editCustomer(mockCustomer);
+      service.saveCustomer(newCustomer).subscribe(customer => {
+        expect(customer).toEqual(newCustomer);
+      });
 
-    // No hay mucho que probar aquí, ya que la función simplemente imprime en la consola.
-    // Podrías considerar el espionaje sobre `console.log` para asegurarte de que se llame correctamente.
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/customers');
+      expect(req.request.method).toBe('POST');
+      req.flush(newCustomer);
+    });
   });
 
-  it('should export CSV', () => {
-    spyOn(console, 'log'); // Mock console.log
+  describe('editCustomer', () => {
+    it('should edit a customer', () => {
+      const updatedCustomer: Customer = {
+        id: 1,
+        sharedKey: 'updatedSharedKey',
+        businessId: 'updatedBusinessId',
+        email: 'updatedEmail@example.com',
+        phone: 'updatedPhone',
+        startDate: new Date(),
+        endDate: new Date(),
+        dateAdded: new Date()
+      };
 
-    service.exportCsv();
+      service.editCustomer(updatedCustomer).subscribe(customer => {
+        expect(customer).toEqual(updatedCustomer);
+      });
 
-    // No hay mucho que probar aquí, ya que la función simplemente imprime en la consola.
-    // Podrías considerar el espionaje sobre `console.log` para asegurarte de que se llame correctamente.
+      const req = httpMock.expectOne('http://localhost:8080/api/v1/customers/1');
+      expect(req.request.method).toBe('PUT');
+      req.flush(updatedCustomer);
+    });
   });
 });

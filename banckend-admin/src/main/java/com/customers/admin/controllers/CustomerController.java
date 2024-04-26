@@ -1,8 +1,8 @@
 package com.customers.admin.controllers;
 
-import com.customers.admin.facades.UserFacade;
+import com.customers.admin.models.dtos.CustomerDTO;
+import com.customers.admin.services.facades.CustomerFacade;
 import com.customers.admin.models.dtos.ResponseDTO;
-import com.customers.admin.models.dtos.UserDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +16,25 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/customers")
 @CrossOrigin(origins = "http://localhost:4200")
-public class UserController {
+public class CustomerController {
 
-    private static final Logger logger = LogManager.getLogger(UserController.class);
+    private static final Logger logger = LogManager.getLogger(CustomerController.class);
 
-    private final UserFacade userFacade;
+    private final CustomerFacade customerFacade;
 
     @Autowired
-    public UserController(UserFacade userFacade) {
-        this.userFacade = userFacade;
+    public CustomerController(CustomerFacade customerFacade) {
+        this.customerFacade = customerFacade;
     }
 
     /**
@@ -37,10 +42,10 @@ public class UserController {
      * @return
      */
     @GetMapping("/")
-    public ResponseDTO getUsers() {
+    public ResponseDTO getCustomers() {
         ResponseDTO response = new ResponseDTO();
         response.setStatus(HttpStatus.OK.name());
-        response.setMessage(userFacade.findAllUsers());
+        response.setMessage(customerFacade.findAllCustomers());
         response.setCode(HttpStatus.OK.value());
         response.setDate(new Date(System.currentTimeMillis()));
         logger.info(String.format("response getUsers(): %s", response));
@@ -53,14 +58,14 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO> getUser(@PathVariable Long id) {
-        Optional<UserDTO> userOptional = userFacade.findUserById(id);
-        List<UserDTO> users = new ArrayList<>();
+    public ResponseEntity<ResponseDTO> getCustomer(@PathVariable Long id) {
+        Optional<CustomerDTO> userOptional = customerFacade.findCustomerById(id);
+        List<CustomerDTO> customers = new ArrayList<>();
         if (userOptional.isPresent()) {
-            users.add(userOptional.orElseThrow());
+            customers.add(userOptional.orElseThrow());
             ResponseDTO response = new ResponseDTO();
             response.setStatus(HttpStatus.OK.name());
-            response.setMessage(users);
+            response.setMessage(customers);
             response.setCode(HttpStatus.OK.value());
             response.setDate(new Date(System.currentTimeMillis()));
             logger.info(String.format("Response getUser: %s", response));
@@ -72,32 +77,33 @@ public class UserController {
 
     /**
      *
-     * @param user
+     * @param customer
      * @param result
      * @return
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user,
-                                     BindingResult result) {
+    public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO customer,
+                                            BindingResult result) {
+        logger.info("Create customer", customer);
         if (result.hasFieldErrors()) {
             logger.error("validation failed: %s", validation(result));
             return validation(result);
         }
-        logger.info("method create user finished Ok");
+        logger.info("method create customer finished Ok");
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userFacade.saveUsers(user));
+                .body(customerFacade.saveCustomers(customer));
     }
 
     /**
      *
-     * @param user
+     * @param customer
      * @param result
      * @param id
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(
-            @Valid @RequestBody UserDTO user,
+    public ResponseEntity<?> updateCustomer(
+            @Valid @RequestBody CustomerDTO customer,
             BindingResult result,
             @PathVariable Long id) {
 
@@ -106,7 +112,7 @@ public class UserController {
                     validation(result)));
             return validation(result);
         }
-        Optional<UserDTO> productOptional = userFacade.updateUser(user);
+        Optional<CustomerDTO> productOptional = customerFacade.updateCustomers(customer);
         if (productOptional.isPresent()) {
             logger.info("updateUser method finished, result: %s",
                     productOptional.orElseThrow());
@@ -121,17 +127,16 @@ public class UserController {
      * @return
      */
     @GetMapping("/export")
-    public ResponseEntity<String> exportUsers(HttpServletResponse response) {
+    public ResponseEntity<String> exportCustomers(HttpServletResponse response) {
         response.setContentType("text/csv");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=clients.csv");
-
         try {
-            List<UserDTO> users = userFacade.findAllUsers();
+            List<CustomerDTO> customer = customerFacade.findAllCustomers();
             PrintWriter writer = response.getWriter();
             logger.info("Write header for file csv");
             writer.write("shared key,business id,phone,email,data added \n");
             logger.info("Write content for file csv");
-            for (UserDTO user : users) {
+            for (CustomerDTO user : customer) {
                 writer.write(user.getSharedKey() + "," + user.getBusinessId() +
                         "," +
                         user.getPhone() + "," + user.getEmail() + "," +  user.getDateAdded() + "\n");

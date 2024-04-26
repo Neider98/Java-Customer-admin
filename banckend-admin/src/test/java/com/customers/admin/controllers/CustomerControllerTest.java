@@ -1,8 +1,8 @@
 package com.customers.admin.controllers;
 
-import com.customers.admin.facades.UserFacade;
+import com.customers.admin.models.dtos.CustomerDTO;
+import com.customers.admin.services.facades.CustomerFacade;
 import com.customers.admin.models.dtos.ResponseDTO;
-import com.customers.admin.models.dtos.UserDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class UserControllerTest {
+public class CustomerControllerTest {
 
     @Mock
-    private UserFacade userFacade;
+    private CustomerFacade customerFacade;
 
     @Mock
     private BindingResult bindingResult;
@@ -37,7 +37,7 @@ public class UserControllerTest {
     private HttpServletResponse httpServletResponse;
 
     @InjectMocks
-    private UserController userController;
+    private CustomerController customerController;
 
     @BeforeEach
     public void setUp() {
@@ -45,10 +45,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUsers() {
-        when(userFacade.findAllUsers()).thenReturn(Collections.singletonList(new UserDTO()));
+    public void testGetCustomers() {
+        when(customerFacade.findAllCustomers()).thenReturn(Collections.singletonList(new CustomerDTO()));
 
-        ResponseDTO response = userController.getUsers();
+        ResponseDTO response = customerController.getCustomers();
 
         assertEquals(HttpStatus.OK.name(), response.getStatus());
         assertEquals(HttpStatus.OK.value(), response.getCode());
@@ -56,61 +56,61 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-        Optional<UserDTO> userOptional = Optional.of(userDTO);
-        when(userFacade.findUserById(anyLong())).thenReturn(userOptional);
+    public void testGetCustomer() {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+        Optional<CustomerDTO> userOptional = Optional.of(customerDTO);
+        when(customerFacade.findCustomerById(anyLong())).thenReturn(userOptional);
 
-        ResponseEntity<ResponseDTO> responseEntity = userController.getUser(1L);
+        ResponseEntity<ResponseDTO> responseEntity = customerController.getCustomer(1L);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1, responseEntity.getBody().getMessage().size());
     }
 
     @Test
-    public void testCreateUser() {
-        UserDTO userDTO = new UserDTO();
+    public void testCreateCustomer() {
+        CustomerDTO customerDTO = new CustomerDTO();
         when(bindingResult.hasFieldErrors()).thenReturn(false);
-        when(userFacade.saveUsers(any(UserDTO.class))).thenReturn(userDTO);
+        when(customerFacade.saveCustomers(any(CustomerDTO.class))).thenReturn(customerDTO);
 
-        ResponseEntity<?> responseEntity = userController.createUser(userDTO, bindingResult);
+        ResponseEntity<?> responseEntity = customerController.createCustomer(customerDTO, bindingResult);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
-    public void testUpdateUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-        Optional<UserDTO> userOptional = Optional.of(userDTO);
+    public void testUpdateCustomer() {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+        Optional<CustomerDTO> userOptional = Optional.of(customerDTO);
         when(bindingResult.hasFieldErrors()).thenReturn(false);
-        when(userFacade.updateUser(any(UserDTO.class))).thenReturn(userOptional);
+        when(customerFacade.updateCustomers(any(CustomerDTO.class))).thenReturn(userOptional);
 
-        ResponseEntity<?> responseEntity = userController.updateUser(userDTO, bindingResult, 1L);
+        ResponseEntity<?> responseEntity = customerController.updateCustomer(customerDTO, bindingResult, 1L);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
-    public void testExportUsers() throws Exception {
+    public void testExportCustomers() throws Exception {
         // Mock data
-        UserDTO userDTO = new UserDTO();
-        userDTO.setSharedKey("jmau");
-        userDTO.setBusinessId("juan");
-        userDTO.setPhone("55555");
-        userDTO.setEmail("jmau@gmail.com");
-        userDTO.setDateAdded(LocalDate.now());
-        List<UserDTO> users = Collections.singletonList(userDTO);
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setSharedKey("jmau");
+        customerDTO.setBusinessId("juan");
+        customerDTO.setPhone("55555");
+        customerDTO.setEmail("jmau@gmail.com");
+        customerDTO.setDateAdded(LocalDate.now());
+        List<CustomerDTO> users = Collections.singletonList(customerDTO);
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 
         // Mock behavior
-        when(userFacade.findAllUsers()).thenReturn(users);
+        when(customerFacade.findAllCustomers()).thenReturn(users);
         when(httpServletResponse.getWriter()).thenReturn(printWriter);
 
         // Invoke method
-        ResponseEntity<String> responseEntity = userController.exportUsers(httpServletResponse);
+        ResponseEntity<String> responseEntity = customerController.exportCustomers(httpServletResponse);
 
         // Assertions
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -123,7 +123,7 @@ public class UserControllerTest {
         when(mockBindingResult.hasFieldErrors()).thenReturn(true);
 
         ResponseEntity<?> response =
-                UserController.validation(mockBindingResult);
+                CustomerController.validation(mockBindingResult);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }

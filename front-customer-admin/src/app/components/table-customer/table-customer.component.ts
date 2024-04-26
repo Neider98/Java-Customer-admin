@@ -21,6 +21,7 @@ export class TableCustomerComponent {
   displayedColumns: string[] = ['sharedKey', 'businessId', 'email', 'phone', 'dataAdded', 'editar'];
 
   customerEdit(customer: number) {
+    console.log(this.customers)
     this.customer.emit(customer);
   }
 

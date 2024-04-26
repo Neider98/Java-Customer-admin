@@ -1,8 +1,8 @@
 package com.customers.admin.services.Impl;
 
-import com.customers.admin.models.entities.User;
-import com.customers.admin.repositories.IUserRepository;
-import com.customers.admin.services.IUserService;
+import com.customers.admin.models.entities.Customer;
+import com.customers.admin.repositories.ICustomerRepository;
+import com.customers.admin.services.ICustomerService;
 import com.customers.admin.util.exceptions.IdNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class CustomerServiceImpl implements ICustomerService {
 
-    private final IUserRepository userRepository;
+    private final ICustomerRepository userRepository;
 
     /**
      *
      * @param userRepository
      */
     @Autowired
-    public UserServiceImpl(IUserRepository userRepository) {
+    public CustomerServiceImpl(ICustomerRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -29,7 +29,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public List<User> findAllUsers() {
+    public List<Customer> findAllCustomer() {
         return userRepository.findAll();
     }
 
@@ -39,35 +39,35 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public Optional<User> findUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+    public Optional<Customer> findCustomerById(Long id) {
+        Optional<Customer> user = userRepository.findById(id);
         user.orElseThrow(() -> new IdNotFoundException("users"));
         return user;
     }
 
     /**
      *
-     * @param user
+     * @param customer
      * @return
      */
     @Override
-    public User saveUser(User user) {
-        String sharedKey = deleteDomainEmail(user.getEmail());
-        user.setSharedKey(sharedKey);
-        return userRepository.save(user);
+    public Customer customerUser(Customer customer) {
+        String sharedKey = deleteDomainEmail(customer.getEmail());
+        customer.setSharedKey(sharedKey);
+        return userRepository.save(customer);
     }
 
     /**
      *
-     * @param user
+     * @param customer
      * @return
      */
     @Override
-    public Optional<User> updateUser(User user) {
-        Optional<User> userOptional = userRepository.findById(user.getId());
+    public Optional<Customer> updateCustomer(Customer customer) {
+        Optional<Customer> userOptional = userRepository.findById(customer.getId());
         if (userOptional.isPresent()) {
-            User updatedUser = userRepository.save(user);
-            return Optional.of(updatedUser);
+            Customer updatedCustomer = userRepository.save(customer);
+            return Optional.of(updatedCustomer);
         } else {
             return Optional.empty();
         }
@@ -75,14 +75,14 @@ public class UserServiceImpl implements IUserService {
 
     /**
      *
-     * @param userId
+     * @param customerId
      * @return
      */
     @Override
-    public Optional<User> deleteUser(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public Optional<Customer> deleteCustomer(Long customerId) {
+        Optional<Customer> userOptional = userRepository.findById(customerId);
         if (userOptional.isPresent()) {
-            userRepository.deleteById(userId);
+            userRepository.deleteById(customerId);
             return userOptional;
         } else {
             return Optional.empty();

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Customer } from './../../../core/models/customer';
 import { Component, EventEmitter, Input, Output, output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
@@ -21,7 +21,6 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    ReactiveFormsModule,
     CommonModule
   ],
   templateUrl: './form-customer.component.html',
@@ -29,17 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class FormCustomerComponent {
 
-  checkoutForm!: FormGroup;
-  
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-
-  @Input() customer!: Customer;
-  @Output() customerOutput = new EventEmitter<Customer>; 
-  @Output() closeForm = new EventEmitter<boolean>();
-
-  closed: boolean = false;
-
-  customerData: Customer = {
+  @Input() customerData: Customer = {
     id: 0,
     sharedKey: "", 
     businessId: "", 
@@ -48,15 +37,13 @@ export class FormCustomerComponent {
     startDate: new Date, 
     endDate: new Date
   };
+  @Output() customerOutput = new EventEmitter<Customer>; 
+  @Output() closeForm = new EventEmitter<boolean>();
+
+  closed: boolean = false;
 
   constructor(){
-    this.checkoutForm = new FormGroup({
-      'businessId': new FormControl(this.customerData.businessId, Validators.required),
-      'phone': new FormControl(this.customerData.phone, Validators.required),
-      'email': new FormControl(this.customerData.email, [Validators.required, Validators.email]),
-      'startDate': new FormControl(this.customerData.startDate, Validators.required),
-      'endDate': new FormControl(this.customerData.endDate, Validators.required)
-    });
+    console.log(this.customerData)
   }
 
   onEndDateChange(event: MatDatepickerInputEvent<Date>) {
@@ -66,9 +53,10 @@ export class FormCustomerComponent {
     if (event.value) this.customerData.endDate = event.value;;
   }
 
-  onSubmit() {
+  onSave() {
     this.closed = true;
     this.closeForm.emit(this.closed)
+    this.customerOutput.emit(this.customerData);
   }
 
 }

@@ -8,11 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Data
-public class UserDTO {
+public class CustomerDTO {
 
     private Long id;    
 
-    @NotBlank
     private String sharedKey;
 
     @NotBlank
@@ -24,7 +23,6 @@ public class UserDTO {
     @NotBlank
     @Email
     private String email;
-
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate startDate;

@@ -1,21 +1,12 @@
 import { Customer } from './../../core/models/customer';
 import {Component, Inject} from '@angular/core';
-import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
-  MatDialogTitle,
   MatDialogContent,
-  MatDialogActions,
-  MatDialogClose,
 } from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
 
 import {provideNativeDateAdapter} from '@angular/material/core';
-import { formatDate } from '@angular/common';
 import { FormCustomerComponent } from "../../shared/components/form-customer/form-customer.component";
 
 @Component({

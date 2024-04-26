@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Customer } from '../models/customer';
 import { HttpClient } from '@angular/common/http';
 import { Response } from '../models/response';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { saveAs } from 'file-saver';
 
 @Injectable({
@@ -16,8 +16,8 @@ export class CustomerService {
 
   getCustomerById(customerId: number): Observable<Customer | undefined> {
     const url = `${this.apiUrl}/${customerId}`;
-    return this.httpClient.get<Customer>(url).pipe(
-      map((customer: Customer) => customer),
+    return this.httpClient.get<Response>(url).pipe(
+      map((response: Response) => response.message[0] as Customer),
       catchError(() => of(undefined))
     );
   }
@@ -28,16 +28,28 @@ export class CustomerService {
     );
   }
 
-  saveCustomer(customer: Customer):void {
-    console.log(customer);
+  saveCustomer(customer: Customer): Observable<Customer> {
+    return this.httpClient.post<Customer>(this.apiUrl, customer).pipe(
+      tap(() => console.log('Cliente guardado exitosamente')),
+      catchError(error => {
+        console.error('Error al guardar el cliente:', error);
+        throw error; 
+      })
+    );
   }
 
-  editCustomer(customer: Customer):void {
-    console.log(customer)
+  editCustomer(customer: Customer): Observable<Customer> {
+    const url = `${this.apiUrl}/${customer.id}`;
+    return this.httpClient.put<Customer>(url, customer).pipe(
+      tap(() => console.log('Cliente editado exitosamente')),
+      catchError(error => {
+        console.error('Error al editar el cliente:', error);
+        throw error;
+      })
+    );
   }
 
   exportCsv(): void {
-    console.log(this.apiUrl + '/export')
     this.httpClient.get(this.apiUrl + '/export', { responseType: 'blob' }).subscribe({
       next: (data: Blob) => {
         const blob = new Blob([data], { type: 'text/csv' });

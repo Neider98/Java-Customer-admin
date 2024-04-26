@@ -1,6 +1,6 @@
 package com.customers.admin.repositories;
 
-import com.customers.admin.models.entities.User;
+import com.customers.admin.models.entities.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IUserRepository extends JpaRepository<User, Long> {
+public interface ICustomerRepository extends JpaRepository<Customer, Long> {
 
-    List<User> findAll();
+    List<Customer> findAll();
 
-    Optional<User> findById(Long id);
+    Optional<Customer> findById(Long id);
 
-    User save(User user);
+    Customer save(Customer customer);
 
     void deleteById(Long id);
 

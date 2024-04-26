@@ -1,7 +1,7 @@
 package com.customers.admin.mappers;
 
-import com.customers.admin.models.dtos.UserDTO;
-import com.customers.admin.models.entities.User;
+import com.customers.admin.models.dtos.CustomerDTO;
+import com.customers.admin.models.entities.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface UserMapper {
+public interface CustomerMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
 
     @Mapping(target = "id", source = "id")
@@ -24,7 +24,7 @@ public interface UserMapper {
     @Mapping(target = "startDate", source = "startDate")
     @Mapping(target = "endDate", source = "endDate")
     @Mapping(target = "dateAdded", source = "createAt")
-    UserDTO userToUserDTO(User user);
+    CustomerDTO customerToCustomerDTO(Customer customer);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "sharedKey", source = "sharedKey")
@@ -33,12 +33,13 @@ public interface UserMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "startDate", source = "startDate")
     @Mapping(target = "endDate", source = "endDate")
-    User userDTOToUser(UserDTO userDTO);
+    @Mapping(target = "createAt", source = "dateAdded")
+    Customer customerDTOToCustomer(CustomerDTO customerDTO);
 
-    List<UserDTO> mapToDtoList(List<User> entities);
+    List<CustomerDTO> mapToDtoList(List<Customer> entities);
 
-    default Optional<UserDTO> mapToDtoOptional(Optional<User> entityOptional) {
-        return entityOptional.map(this::userToUserDTO);
+    default Optional<CustomerDTO> mapToDtoOptional(Optional<Customer> entityOptional) {
+        return entityOptional.map(this::customerToCustomerDTO);
     }
 
 }

@@ -47,8 +47,13 @@ export class HomeComponent implements OnInit{
   constructor(public dialog: MatDialog, private customerService: CustomerService) {}
 
   ngOnInit(): void {
+    this.getCustomers();
+  }
+
+  getCustomers() {
     this.subscription = this.customerService.getCustomers().subscribe({
       next: (customers: Customer[]) => {
+        console.log(customers)
         this.customers = customers;
         this.filteredCustomers = this.customers;
       },
@@ -64,32 +69,64 @@ export class HomeComponent implements OnInit{
     );
   }
 
+  searhAdvancedsharedKey(
+    
+  ) {}
+
   openDialog(): void {
     const dialogRef = this.dialog.open(AddCustomerComponent);
-
+  
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.customer = result;
-      this.customerService.saveCustomer(this.customer);
+      if (result) {
+        console.log('The dialog was closed with result:', result);
+        const response = this.customerService.saveCustomer(result);
+        response.subscribe(savedCustomer => {
+          console.log('Cliente guardado exitosamente:', savedCustomer);
+          this.getCustomers();
+        }, error => {
+          console.error('Error al guardar el cliente:', error);
+        });
+      } else {
+        console.log('El diálogo fue cerrado sin un resultado válido.');
+      }
     });
   }
 
   editCustomer($event: number) {
-    this.customerService.getCustomerById($event).subscribe(
-      (retrievedCustomer) => {
+    this.customerService.getCustomerById($event).subscribe({
+      next: (retrievedCustomer) => {
         if (retrievedCustomer !== undefined) {
           this.customer = retrievedCustomer;
+          console.log(this.customer);
           const dialogRef = this.dialog.open(AddCustomerComponent, {
             data: this.customer,
           });
-
-          dialogRef.afterClosed().subscribe(result => {
-            this.customer = result;
-            this.customerService.editCustomer(this.customer);
+  
+          dialogRef.afterClosed().subscribe({
+            next: (result) => {
+              console.log(this.customer);
+              if (result !== undefined) {
+                this.customer = result;
+                this.customerService.editCustomer(this.customer).subscribe({
+                  next: (updatedCustomer) => {
+                    console.log('Cliente editado exitosamente', updatedCustomer);
+                    this.getCustomers();
+                  },
+                  error: (error) => {
+                    console.error('Error al editar el cliente:', error);
+                  }
+                });
+              }
+            }
           });
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error al obtener el cliente:', error);
+      }
+    });
   }
+  
 
   exportCsv() {
     this.customerService.exportCsv();
